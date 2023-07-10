@@ -1,0 +1,5 @@
+[workspace]
+members = [
+    "rust_first_class",
+    "rust_second_class",
+]
