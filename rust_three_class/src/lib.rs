@@ -1,3 +1,4 @@
+// 学生
 #[derive(Debug)]
 pub struct Student {
     pub id: u32,
@@ -5,12 +6,15 @@ pub struct Student {
     pub class_id: u32,
 }
 
+// 社团
 #[derive(Debug)]
 pub struct Club {
     pub id: u32,
     pub name: String,
     pub member_ids: Vec<u32>,
 }
+
+// 班级
 #[derive(Debug)]
 pub struct Class {
     pub id: u32,
@@ -18,12 +22,15 @@ pub struct Class {
     pub student_ids: Vec<u32>,
     pub course_ids: Vec<u32>,
 }
+
+// 课程
 #[derive(Debug, Clone)]
 pub struct Course {
     pub id: u32,
     pub name: String,
 }
 
+// 学生管理系统
 #[derive(Debug)]
 pub struct StudentManageSystem {
     pub students: Vec<Student>,
@@ -50,6 +57,7 @@ impl StudentManageSystem {
     pub fn add_class(&mut self, class: Class) {
         self.classes.push(class);
     }
+    // 检查课程ID是否存在
     pub fn check_courses(&self, course_id: u32) -> Option<bool> {
         match self.courses.iter().find(|c| c.id == course_id) {
             Some(_) => Some(true),
@@ -59,6 +67,7 @@ impl StudentManageSystem {
             }
         }
     }
+    // 检查学生id是否存在
     pub fn check_students(&self, student_id: u32) -> Option<bool> {
         match self.students.iter().find(|c| c.id == student_id) {
             Some(_) => Some(true),
@@ -68,6 +77,8 @@ impl StudentManageSystem {
             }
         }
     }
+
+    // 将课程添加到班级
     pub fn add_course_to_class(&mut self, class_id: u32, course_id: u32) -> bool {
         if !self.check_courses(course_id).unwrap_or(false) {
             return false;
@@ -86,6 +97,7 @@ impl StudentManageSystem {
         }
     }
 
+    // 调班
     pub fn update_students_to_class(&mut self, class_id: u32, student_id: u32) -> bool {
         if let Some(class) = self.classes.iter_mut().find(|c| c.id == class_id) {
             if let Some(student) = self.students.iter_mut().find(|s| s.id == student_id) {
@@ -108,6 +120,7 @@ impl StudentManageSystem {
         }
     }
 
+    // 学生加入社团
     pub fn add_students_to_club(&mut self, club_id: u32, student_id: u32) -> bool {
         if !self.check_students(student_id).unwrap_or(false) {
             return false;
@@ -127,6 +140,7 @@ impl StudentManageSystem {
         }
     }
 
+    // 学生退出社团
     pub fn delete_students_from_club(&mut self, club_id: u32, student_id: u32) -> bool {
         if !self.check_students(student_id).unwrap_or(false) {
             return false;
@@ -173,6 +187,7 @@ impl StudentManageSystem {
     pub fn add_students(&mut self, student: Student) {
         self.students.push(student);
     }
+    // 学生退学
     pub fn remove_students(&mut self, student_id: u32) -> bool {
         if !self.check_students(student_id).unwrap_or(false) {
             return false;
@@ -199,6 +214,7 @@ impl StudentManageSystem {
             false
         }
     }
+    // 查询学生信息
     pub fn get_student(&self, student_id: u32) -> Option<&Student> {
         if !self.check_students(student_id).unwrap_or(false) {
             return None;
