@@ -9,3 +9,7 @@ version = "0.1.0"
 [[package]]
 name = "rust_second_class"
 version = "0.1.0"
+
+[[package]]
+name = "rust_three_class"
+version = "0.1.0"
