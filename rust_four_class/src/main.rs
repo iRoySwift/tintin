@@ -9,8 +9,8 @@ fn main() {
 
     // 坐标相加
     point_add::run();
-
+    // 通过枚举方式实现vec
     vec_enum_demo::run();
-
+    // 通过trait方式实现vec
     vec_trait_demo::run();
 }
