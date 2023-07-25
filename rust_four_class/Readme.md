@@ -162,41 +162,106 @@ pub fn run() {
 
 ## 定义三个不同的类型，使用 Trait Object，将其放入一个 Vec 中，对 Vec 进行遍历，调用三种不同类型的各自的方法。 同时，说明其上两种不同实现方法的区别。
 
-```text
-error[E0038]: the trait `StructVector` cannot be made into an object
-  --> rust_four_class/src/vec_trait_demo.rs:77:19
-   |
-77 |     let vec_enum: Vec<Box<dyn StructVector>> = vec![
-   |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^ `StructVector` cannot be made into an object
-   |
-note: for a trait to be "object safe" it needs to allow building a vtable to allow the call to be resolvable dynamically; for more information visit <https://doc.rust-lang.org/reference/items/traits.html#object-safety>
-  --> rust_four_class/src/vec_trait_demo.rs:46:8
-   |
-44 | trait StructVector {
-   |       ------------ this trait cannot be made into an object...
-45 |     fn call(&self);
-46 |     fn show();
-   |        ^^^^ ...because associated function `show` has no `self` parameter
-help: consider turning `show` into a method by giving it a `&self` argument
-   |
-46 |     fn show(&self);
-   |             +++++
-help: alternatively, consider constraining `show` so it does not apply to trait objects
-   |
-46 |     fn show() where Self: Sized;
-   |               +++++++++++++++++
-
-```
-
 - 注意：
   - trait 中不能放置关联函数
+
+```rust
+// ## 使用枚举包裹三个不同的类型，并放入一个 Vec 中，对 Vec 进行遍历，调用三种不同类型的各自的方法。
+
+use std::fmt::Debug;
+
+#[derive(Debug)]
+struct Point<T> {
+    x: T,
+    y: T,
+}
+
+impl<T> Point<T>
+where
+    T: Debug,
+{
+    // 关联函数
+    fn new(x: T, y: T) -> Self {
+        Point { x, y }
+    }
+}
+
+#[derive(Debug)]
+struct Rectangle;
+impl Rectangle {
+    fn new() -> Self {
+        Rectangle
+    }
+}
+
+#[derive(Debug)]
+struct Circle<T>(T);
+impl<T> Circle<T> {
+    fn new(radius: T) -> Self {
+        Circle(radius)
+    }
+}
+
+trait StructVector {
+    // 方法
+    fn call(&self);
+    fn show(&self);
+}
+
+impl<T> StructVector for Point<T> {
+    // 方法
+    fn call(&self) {
+        println!("结构体： Point");
+    }
+
+    fn show(&self) {
+        // Point::<T>::show();
+        println!("show Point");
+    }
+}
+impl StructVector for Rectangle {
+    fn call(&self) {
+        println!("单元结构体： Rectangle");
+    }
+    fn show(&self) {
+        // Rectangle::show();
+        println!("show Rectangle")
+    }
+}
+impl<T> StructVector for Circle<T> {
+    fn call(&self) {
+        println!("元组结构体： Circle");
+    }
+    fn show(&self) {
+        // Circle::<T>::show();
+        println!("show Circle")
+    }
+}
+
+// 运行run方法
+pub fn run() {
+    let vec_enum: Vec<Box<dyn StructVector>> = vec![
+        Box::new(Point::new(0, 2)),
+        Box::new(Rectangle::new()),
+        Box::new(Circle::new(5)),
+    ];
+    for item in vec_enum {
+        item.call();
+        // 调用关联函数
+        item.show();
+    }
+}
+
+```
 
 ## 两种不同实现方法的区别
 
 - enum:
 
   1.  枚举集合可以通过 match 语句来匹配成员，来调用关联函数
+  2.  调用 struct 上的方法，也只能通过匹配成员来调用
 
 - trait
 
   1. trait object 集合无法通过 match 语句来匹配成员，调用关联函数，只能通过 trait 上 show 方法 来调用各个类型上的关联函数
+  2. 调用 struct 上的方法，可以直接调用
