@@ -166,7 +166,7 @@ pub fn run() {
   - trait 中不能放置关联函数
 
 ```rust
-// ## 使用枚举包裹三个不同的类型，并放入一个 Vec 中，对 Vec 进行遍历，调用三种不同类型的各自的方法。
+// ## 定义三个不同的类型，使用 Trait Object，将其放入一个 Vec 中，对 Vec 进行遍历，调用三种不同类型的各自的方法。 同时，说明其上两种不同实现方法的区别。
 
 use std::fmt::Debug;
 
@@ -176,13 +176,13 @@ struct Point<T> {
     y: T,
 }
 
-impl<T> Point<T>
-where
-    T: Debug,
-{
+impl<T> Point<T> {
     // 关联函数
     fn new(x: T, y: T) -> Self {
         Point { x, y }
+    }
+    fn show() {
+        println!("show Point")
     }
 }
 
@@ -192,6 +192,9 @@ impl Rectangle {
     fn new() -> Self {
         Rectangle
     }
+    fn show() {
+        println!("show Rectangle")
+    }
 }
 
 #[derive(Debug)]
@@ -200,12 +203,15 @@ impl<T> Circle<T> {
     fn new(radius: T) -> Self {
         Circle(radius)
     }
+    fn show() {
+        println!("show Circle")
+    }
 }
 
 trait StructVector {
     // 方法
     fn call(&self);
-    fn show(&self);
+    fn show_associated(&self);
 }
 
 impl<T> StructVector for Point<T> {
@@ -214,27 +220,27 @@ impl<T> StructVector for Point<T> {
         println!("结构体： Point");
     }
 
-    fn show(&self) {
-        // Point::<T>::show();
-        println!("show Point");
+    fn show_associated(&self) {
+        Point::<T>::show();
+        // println!("show Point");
     }
 }
 impl StructVector for Rectangle {
     fn call(&self) {
         println!("单元结构体： Rectangle");
     }
-    fn show(&self) {
-        // Rectangle::show();
-        println!("show Rectangle")
+    fn show_associated(&self) {
+        Rectangle::show();
+        // println!("show Rectangle")
     }
 }
 impl<T> StructVector for Circle<T> {
     fn call(&self) {
         println!("元组结构体： Circle");
     }
-    fn show(&self) {
-        // Circle::<T>::show();
-        println!("show Circle")
+    fn show_associated(&self) {
+        Circle::<T>::show();
+        // println!("show Circle")
     }
 }
 
@@ -248,9 +254,10 @@ pub fn run() {
     for item in vec_enum {
         item.call();
         // 调用关联函数
-        item.show();
+        item.show_associated();
     }
 }
+
 
 ```
 
@@ -263,5 +270,5 @@ pub fn run() {
 
 - trait
 
-  1. trait object 集合无法通过 match 语句来匹配成员，调用关联函数，只能通过 trait 上 show 方法 来调用各个类型上的关联函数
+  1. trait object 集合无法通过 match 语句来匹配成员，调用关联函数，只能通过 trait 上 show_associated 方法 来调用各个类型上的关联函数 show
   2. 调用 struct 上的方法，可以直接调用

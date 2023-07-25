@@ -8,13 +8,13 @@ struct Point<T> {
     y: T,
 }
 
-impl<T> Point<T>
-where
-    T: Debug,
-{
+impl<T> Point<T> {
     // 关联函数
     fn new(x: T, y: T) -> Self {
         Point { x, y }
+    }
+    fn show() {
+        println!("show Point")
     }
 }
 
@@ -24,6 +24,9 @@ impl Rectangle {
     fn new() -> Self {
         Rectangle
     }
+    fn show() {
+        println!("show Rectangle")
+    }
 }
 
 #[derive(Debug)]
@@ -32,12 +35,15 @@ impl<T> Circle<T> {
     fn new(radius: T) -> Self {
         Circle(radius)
     }
+    fn show() {
+        println!("show Circle")
+    }
 }
 
 trait StructVector {
     // 方法
     fn call(&self);
-    fn show(&self);
+    fn show_associated(&self);
 }
 
 impl<T> StructVector for Point<T> {
@@ -46,27 +52,27 @@ impl<T> StructVector for Point<T> {
         println!("结构体： Point");
     }
 
-    fn show(&self) {
-        // Point::<T>::show();
-        println!("show Point");
+    fn show_associated(&self) {
+        Point::<T>::show();
+        // println!("show Point");
     }
 }
 impl StructVector for Rectangle {
     fn call(&self) {
         println!("单元结构体： Rectangle");
     }
-    fn show(&self) {
-        // Rectangle::show();
-        println!("show Rectangle")
+    fn show_associated(&self) {
+        Rectangle::show();
+        // println!("show Rectangle")
     }
 }
 impl<T> StructVector for Circle<T> {
     fn call(&self) {
         println!("元组结构体： Circle");
     }
-    fn show(&self) {
-        // Circle::<T>::show();
-        println!("show Circle")
+    fn show_associated(&self) {
+        Circle::<T>::show();
+        // println!("show Circle")
     }
 }
 
@@ -80,6 +86,6 @@ pub fn run() {
     for item in vec_enum {
         item.call();
         // 调用关联函数
-        item.show();
+        item.show_associated();
     }
 }
