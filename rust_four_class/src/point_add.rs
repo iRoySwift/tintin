@@ -18,9 +18,13 @@ impl<T: Add<Output = T>> Add for Point<T> {
     }
 }
 
+fn add_object<T: Add<Output = T>>(obj1: T, obj2: T) -> T {
+    obj1 + obj2
+}
+
 pub fn run() {
     assert_eq!(
-        Point { x: 1, y: 1 } + Point { x: 2, y: 2 },
+        add_object(Point { x: 1, y: 1 }, Point { x: 2, y: 2 }),
         Point { x: 3, y: 3 }
     )
 }
