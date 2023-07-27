@@ -263,12 +263,6 @@ pub fn run() {
 
 ## 两种不同实现方法的区别
 
-- enum:
+1. trait 版本会有点局限性，不是所有 trait 都可以转成 dyn trait
 
-  1.  枚举集合可以通过 match 语句来匹配成员，来调用关联函数
-  2.  调用 struct 上的方法，也只能通过匹配成员来调用
-
-- trait
-
-  1. trait object 集合无法通过 match 语句来匹配成员，调用关联函数，只能通过 trait 上 show_associated 方法 来调用各个类型上的关联函数 show
-  2. 调用 struct 上的方法，可以直接调用
+2. 在调用不同类型方法时，enum 实现的版本通过 branch 实现静态分发；而 trait 实现的版本通过 vtable 实现动态分发，因此 enum 效率更高
