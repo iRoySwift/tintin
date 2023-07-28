@@ -4,4 +4,5 @@ members = [
     "rust_second_class",
     "rust_three_class",
     "rust_four_class",
+    "rust_five_class",
 ]
